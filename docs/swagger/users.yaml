@@ -1,0 +1,188 @@
+swagger: '2.0'
+info:
+  description: User API
+  version: 1.0.0
+  title: .me - User API
+basePath: /api/v1/users
+schemes:
+ - https
+
+paths:
+  /:
+    post:
+      tags:
+      - users
+      summary: Creates a user
+      operationId: createUser
+      description: Creates a new user on the database
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: user
+        description: The user to create
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        201:
+          description: User successfully created
+
+  /{userId}:
+    put:
+      tags:
+      - users
+      summary: Updates a user
+      operationId: updateUser
+      description: Updates an existing user on the database
+      parameters:
+      - in: path
+        name: userId
+        description: The unique ID of the user to update
+        type: string
+        required: true
+      - in: body
+        name: user
+        description: The user to update
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        204:
+          description: User successfully udpated
+    delete:
+      tags:
+      - users
+      summary: Deletes a user
+      operationId: deleteUsers
+      description: Deletes an existing user on the database
+      parameters:
+      - in: path
+        name: userId
+        description: The unique ID of the user to delete
+        type: string
+        required: true
+      responses:
+        204:
+          description: User successfully deleted
+
+  /{userId}/skills:
+    get:
+      tags:
+      - skills
+      summary: Gets list of skills for the user
+      operationId: getSkills
+      description: get them skills
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userId
+        description: user's username
+        type: string
+        required: true
+      responses:
+        200:
+          description: results for stored skills
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Skill'
+    post:
+      tags:
+      - skills
+      summary: Adds a skill to the user
+      operationId: addSkill
+      description: Addss a skill to a user
+      parameters:
+      - in: path
+        name: userId
+        type: string
+        required: true
+      - in: body
+        name: skill
+        schema:
+          $ref: '#/definitions/Skill'
+        required: true
+      responses:
+        204:
+          description: Skill successfully created
+
+  /{userId}/skills/{skillId}:
+    put:
+      tags:
+      - skills
+      summary: Updates a skill
+      operationId: updateSkill
+      description: Updates a user's skill
+      parameters:
+      - in: path
+        name: userId
+        type: string
+        required: true
+      - in: path
+        name: skillId
+        type: string
+        required: true
+      responses:
+        204:
+          description: Skill successfully updated
+    delete:
+      tags:
+      - skills
+      summary: Deletes a skill
+      operationId: deleteSkill
+      description: Deletes a user's skill
+      parameters:
+      - in: path
+        name: userId
+        type: string
+        required: true
+      - in: path
+        name: skillId
+        type: string
+        required: true
+      responses:
+        204:
+          description: Skill successfully deleted
+
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      occupation:
+        type: string
+      location:
+        type: string
+      bio:
+        type: string
+      skills:
+        type: array
+        items:
+          $ref: '#/definitions/Skill'
+
+  Skill:
+    type: object
+    required:
+    - name
+    - level
+    - dividend
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: 290f1ee-6c54-4b01-90e6-d701748f0851
+        readOnly: true
+      name:
+        type: string
+        example: React
+      level:
+        type: number
+        format: int
+      dividend:
+        type: number
+        format: int
+        default: 100
